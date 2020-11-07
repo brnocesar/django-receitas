@@ -20,7 +20,7 @@
                             <div class="single-best-receipe-area mb-30">
                                 <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
                                 <div class="receipe-content">
-                                    <a href="{% url 'receita' %}">
+                                    <a href="{% url 'receita' receita.id %}">
                                         <h5>{{ receita.nome }}</h5>
                                     </a>
                                 </div>
