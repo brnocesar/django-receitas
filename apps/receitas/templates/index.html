@@ -14,18 +14,21 @@
         <div class="container">
             <div class="row">
                 
-                {% for chave, valor in nome_das_receitas.items %}
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <div class="single-best-receipe-area mb-30">
-                            <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
-                            <div class="receipe-content">
-                                <a href="{% url 'receita' %}">
-                                    <h5>{{ valor }}</h5>
-                                </a>
+                {% if receitas %}
+                    {% for receita in receitas %}
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <div class="single-best-receipe-area mb-30">
+                                <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
+                                <div class="receipe-content">
+                                    <a href="{% url 'receita' %}">
+                                        <h5>{{ receita.nome }}</h5>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                {% endif %}
 
             </div>
         </div>
