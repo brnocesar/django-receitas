@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
     <!-- Preloader -->
     <div id="preloader">
         <i class="circle-preloader"></i>
@@ -9,47 +10,24 @@
 
     {% include 'partials/header.html' %}
 
-    <!-- ##### Best Receipe Area Start ##### -->
     <section class="best-receipe-area">
         <div class="container">
             <div class="row">
-                <!-- Single Best Receipe Area -->
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="single-best-receipe-area mb-30">
-                        <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
-                        <div class="receipe-content">
-                            <a href="{% url 'receita' %}">
-                                <h5>Nome da receita</h5>
-                            </a>
+                
+                {% for chave, valor in nome_das_receitas.items %}
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="single-best-receipe-area mb-30">
+                            <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
+                            <div class="receipe-content">
+                                <a href="{% url 'receita' %}">
+                                    <h5>{{ valor }}</h5>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
 
-                <!-- Single Best Receipe Area -->
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="single-best-receipe-area mb-30">
-                        <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
-                        <div class="receipe-content">
-                            <a href="{% url 'receita' %}">
-                                <h5>Nome da receita</h5>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Single Best Receipe Area -->
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="single-best-receipe-area mb-30">
-                        <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
-                        <div class="receipe-content">
-                            <a href="{% url 'receita' %}">
-                                <h5>Nome da receita</h5>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
-    <!-- ##### Best Receipe Area End ##### -->
 {% endblock %}
