@@ -18,6 +18,8 @@
 8. [Recuperando dados do Banco e apresentando nas _views_](#8-recuperando-dados-do-banco)  
   8.1 Listando as receitas  
   8.2 Detalhes de uma receita  
+9. [Integrando apps](#9-integrando-apps)  
+  9.1 Criando um novo app  
 
 ## 0 Rodando a aplicação
 
@@ -237,7 +239,9 @@ python manage.py createsuperuser
 
 basta digitar as credências e dependendo da senha que você colocar o Django vai fornecer algumas orientações para criar uma senha mais segura.
 
-Após logar no painel do **admin** percebemos que não há nada relacionado ao app `receitas`, para que seja disponibilizado o CRUD dessa entidade é necessário registrar o _model_ em `app/receitas/admin.py` (_commit_ [a372c7b](https://github.com/brnocesar/alura/commit/a372c7bb97854f502c05ec98b187ebf7aa8d5141)). Após isso, ao recarregar a página vemos que existe uma seção dedicada aos registros do app `receitas`.
+Após logar no painel do **admin** percebemos que não há nada relacionado ao app `receitas`, para que seja disponibilizado o CRUD dessa entidade é necessário registrar o _model_ em `app/receitas/admin.py` (_commit_ [a372c7b](https://github.com/brnocesar/alura/commit/a372c7bb97854f502c05ec98b187ebf7aa8d5141)). Ao recarregar a página vemos que existe uma seção dedicada aos registros do app `receitas`.
+
+Podemos customizar a forma como as receitas são apresentadas no Django Admin, por exemplo, apresentando alguns atributos e tornando-os links para suas receitas. Também é possível habilitar algumas funcionalidades como filtros, buscas e paginação. Para isso criamos uma classe em `apps/receitas/admin.py` extendendo `admin.ModelAdmin` e definimos as alterações que quisérmos (_commit_ [cb855da](https://github.com/brnocesar/alura/commit/cb855daac4f4385ffb7567ad9c18889cc4588720)).
 
 [↑ voltar ao topo](#django-receitas)
 
@@ -262,6 +266,20 @@ Para indicar que queremos acessar a página com as informações de uma receita 
 Agora que temos acesso ao identificador único, que nesse caso é a chave primária da tabela de receitas, podemos receber esse parâmetro no método `receita()` em `apps/receitas/views.py`, recuperar o registro a partir da chave primária e passar o objeto para a _view_ (_commit_ [e21e83f](https://github.com/brnocesar/alura/commit/e21e83f82013506b68e4906db1c5b089186c8626)).
 
 Por fim basta apresentar os atributos do objeto na _view_ receita (_commit_ [7fcb5d5](https://github.com/brnocesar/alura/commit/7fcb5d57f203dcf148ce49933caf62dc0300b9a3)).
+
+[↑ voltar ao topo](#django-receitas)
+
+## 9 Integrando apps
+
+As receitas são cadastradas por pessoas, então vamos criar um novo app para gerenciar as **pessoas** da aplicação e depois integrá-lo com o app de receitas.
+
+### 9.1 Criando um novo app
+
+Todo o procedimento é o mesmo que foi feito para o app de receitas e a entidade Receita. Primeiro criamos o novo app e o registramos na aplicação adicionando-o na váriavel `INSTALLED_APPS` de `djangoreceitas/settings.py`.
+
+Criamos a classe para representar a entidade Pessoa em `apps/pessoas/models.py` e a registramos para ser gerenciada pelo Admin em `apps/pessoas/admin.py`, aproveitando para customizar a página de listagem.
+
+E por fim, geramos as _migrations_ e a executamos (_commit_ [d502182](https://github.com/brnocesar/alura/commit/d502182088b58dbd1d348e1415b0497c51cfce17)).
 
 [↑ voltar ao topo](#django-receitas)
 
