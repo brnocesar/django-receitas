@@ -3,7 +3,12 @@ from .models import Receita
 
 def index(request):
     
-    receitas = Receita.objects.filter(publicada=True).order_by('-data_criacao')
+    receitas = Receita.objects.filter(publicada=True)
+    
+    if 'procurar_receita' in request.GET and request.GET['procurar_receita']:
+        receitas = receitas.filter(nome__icontains=request.GET['procurar_receita'])
+    
+    receitas = receitas.order_by('-data_criacao')
     
     return render(request, 'index.html', {'receitas': receitas})
 
