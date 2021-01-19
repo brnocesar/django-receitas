@@ -10,8 +10,8 @@
 4. [Arquivos estáticos](#4-arquivos-estáticos)  
   4.1. Definindo arquivos estáticos no HTML  
   4.2. Criando uma nova _view_  
-  4.3. Extendendo código HTML e _patials_  
-  4.4. _Patials_  
+  4.3. Extendendo código HTML e _partials_  
+  4.4. _Partials_  
   4.5. Apresentando informações de forma dinâmica  
 5. [Banco de Dados](#5-banco-de-dados)  
 6. [_Models_ e _migrations_](#6-_models_-e-_migrations_)  
@@ -85,13 +85,13 @@ pip freeze
 
 ## 2 Criando o projeto
 
-- Lista de comandos disponíveis na cli do Django:
+- Lista de comandos disponíveis na _cli_ do Django:
 
 ```terminal
 django-admin help
 ```
 
-- Criando o projeto da aplicação (_commit_ [938745e](https://github.com/brnocesar/alura/commit/938745e0a1f78395e8be1b5e88af6b2fcd47de6a)):
+- Criando o projeto da aplicação (_commit_ [938745e](https://github.com/brnocesar/django-receitas/commit/938745e0a1f78395e8be1b5e88af6b2fcd47de6a)):
 
 ```terminal
 django-admin startproject djangoreicetas .
@@ -107,7 +107,9 @@ python manage.py runserver
 
 ## 3 Apps
 
-Os Apps do Django podem ser entendidos como "sub-aplicações" (?) com a finalidade de representar domínios (?) da aplicação. Ou da pra dizer que é a entidade mesmo? Um projeto é uma coleção de configurações e apps que formam um _site_; e um app é uma "sub-aplicação" com uma finalidade/responsabilidade (única?) bem definida, podendo fazer parte de vários projetos.
+Os Apps do Django podem ser entendidos como "sub-aplicações" com a finalidade de representar domínios da aplicação. No sistema desenvolvido aqui, por exemplo, vamos ter um app resposável por todo o gerenciamento das receitas.
+
+Um projeto é uma coleção de configurações e apps que formam um _site_; e um app é uma "sub-aplicação" com uma finalidade/responsabilidade bem definida, podendo fazer parte de vários projetos.
 
 ### 3.1 Criando um app
 
@@ -117,7 +119,7 @@ Criando um app na raiz da aplicação:
 python manage.py startapp receitas
 ```
 
-Para criar o app dentro de uma pasta dedicada, primeiro devemos criar essa pasta e então podemos passar como segundo parâmetro o caminho onde o app deverá ser criado (_commit_ [60f0ad1](https://github.com/brnocesar/alura/commit/60f0ad14ef51e6229afb3b0ad0738d0db721cf64)):
+Para criar o app dentro de uma pasta dedicada, primeiro devemos criar essa pasta e então podemos passar como segundo parâmetro o caminho onde o app deverá ser criado (_commit_ [60f0ad1](https://github.com/brnocesar/django-receitas/commit/60f0ad14ef51e6229afb3b0ad0738d0db721cf64)):
 
 ```terminal
 mkdir apps
@@ -127,7 +129,7 @@ python manage.py startapp receitas ./apps/receitas
 
 ### 3.2 Registrando o app
 
-Verificamos o nome do app no arquivo `apps/receitas/apps.py` e adicionamos na lista `INSTALLED_APPS` do arquivo `djangoreceitas/settings.py`. Se o app não estiver na raiz do projeto deve ser colocado o _dot path_ (_commit_ [3657009](https://github.com/brnocesar/alura/commit/36570099ac3a94c74e3e2ec56a92cf5801cad42a)).
+Verificamos o nome do app no arquivo `apps/receitas/apps.py` e adicionamos na lista `INSTALLED_APPS` do arquivo `djangoreceitas/settings.py`. Se o app não estiver na raiz do projeto deve ser colocado o _dot path_ (_commit_ [3657009](https://github.com/brnocesar/django-receitas/commit/36570099ac3a94c74e3e2ec56a92cf5801cad42a)).
 
 ### 3.3 Primeira rota
 
@@ -139,13 +141,13 @@ touch apps/receitas/urls.py
 
 Após isso podemos fazer os "importes" necessários e mapear a rota `/` desse grupo para o método `index()`, que será definido no arquivo `apps/receitas/views.py`, retornando uma resposta HTTP com um HTML.
 
-E por último devemos registrar o arquivo de rotas do app receitas em `djangoreceitas/urls.py` (_commit_ [3d58da1](https://github.com/brnocesar/alura/commit/3d58da13210010a911102b90432c5f7d3eebff70)).
+E por último devemos registrar o arquivo de rotas do app receitas em `djangoreceitas/urls.py` (_commit_ [3d58da1](https://github.com/brnocesar/django-receitas/commit/3d58da13210010a911102b90432c5f7d3eebff70)).
 
 [↑ voltar ao topo](#django-receitas)
 
 ## 4 Arquivos estáticos
 
-Podemos modificar o método `index()` no arquivo `apps/receitas/views.py` para ao invés de retornar uma resposta HTTP, retornar um arquivo HTML rendereizado. Então primeiro criamos o arquivo `apps/receitas/templates/index.html` que vai conter todo o HTML da página e modificamos o método `index()` (_commit_ [19845aa](https://github.com/brnocesar/alura/commit/19845aa1c577d5e82aab19fcc1f8f6a1c06e24fc)).
+Podemos modificar o método `index()` no arquivo `apps/receitas/views.py` para ao invés de retornar uma resposta HTTP, retornar um arquivo HTML rendereizado. Então primeiro criamos o arquivo `apps/receitas/templates/index.html` que vai conter todo o HTML da página e modificamos o método `index()` (_commit_ [19845aa](https://github.com/brnocesar/django-receitas/commit/19845aa1c577d5e82aab19fcc1f8f6a1c06e24fc)).
 
 Agora podemos começar a adicionar o estilo das páginas HTML nos chamados **arquivos estáticos**. A primeira coisa a ser feita é especificar onde a apliacação deve procurar pelas páginas HTML. Como temos apenas um app, basta colocar o caminho da pasta `templates` desse app na lista mapeada para a chave `DIRS` do dicionário na lista `TEMPLATES` do arquivo de configurações do projeto (`djangoreceitas/settings.py`).
 
@@ -154,23 +156,23 @@ Ainda no arquivo de configurações, devemos especificar o local em que os arqui
 - `STATIC_ROOT`: local em que os arquivos estáticos vão ficar
 - `STATICFILES_DIRS`: diretórios que contém os arquivos estáticos
 
-não esqueça de adicionar o `import os.path` caso ele não esteja lá (_commit_ [e5ee498](https://github.com/brnocesar/alura/commit/e5ee498ac318286c6b7fd29072e0088a50e20d27)).
+não esqueça de adicionar o `import os.path` caso ele não esteja lá (_commit_ [e5ee498](https://github.com/brnocesar/django-receitas/commit/e5ee498ac318286c6b7fd29072e0088a50e20d27)).
 
-Após isso podemos de fato adicionar os arquivos estáticos em `djangoreceitas/static` (_commit_ [eca6e98](https://github.com/brnocesar/alura/commit/eca6e9812df32ca3008bdca7099ed57a6b872d1b)). E por último, "carregamos" os arquivos estáticos para a pasta `static` na raiz da aplicação. Nesse procedimento o Django faz uma cópia de todos arquivos estáticos da aplicação para essa pasta na raiz, para poder manipulá-los melhor (?):
+Após isso podemos de fato adicionar os arquivos estáticos em `djangoreceitas/static` (_commit_ [eca6e98](https://github.com/brnocesar/django-receitas/commit/eca6e9812df32ca3008bdca7099ed57a6b872d1b)). E por último, "carregamos" os arquivos estáticos para a pasta `static` na raiz da aplicação. Nesse procedimento o Django faz uma cópia de todos arquivos estáticos da aplicação para essa pasta na raiz, para poder manipulá-los melhor:
 
 ```terminal
 python manage.py collectstatic
 ```
 
-É uma boa prática manter esses arquivos estáticos fora do repositório pois conforme nossa aplicação for crescendo, mais arquivos serão "copiados" para essa pasta. E também porque esse processo, em geral, é um dos passos realizados para o _deploy_ da aplicação (_commit_ [d856a11](https://github.com/brnocesar/alura/commit/d856a1118813dca2ba550276dfe3cc7f9bde8274)).
+É uma boa prática manter esses arquivos estáticos fora do repositório pois conforme nossa aplicação for crescendo, mais arquivos serão "copiados" para essa pasta. E também porque esse processo, em geral, é um dos passos realizados para o _deploy_ da aplicação (_commit_ [d856a11](https://github.com/brnocesar/django-receitas/commit/d856a1118813dca2ba550276dfe3cc7f9bde8274)).
 
 ### 4.1 Definindo arquivos estáticos no HTML
 
-Vamos adicionar arquivos HTML mais completos para o app de receitas, agora fazendo uso dos arquivos estáticos que foram adicionados (_commit_ [81492ec](https://github.com/brnocesar/alura/commit/81492ecb5d40350f0a0209713f00d9c1a276bca6)).
+Vamos adicionar arquivos HTML mais completos para o app de receitas, agora fazendo uso dos arquivos estáticos que foram adicionados (_commit_ [81492ec](https://github.com/brnocesar/django-receitas/commit/81492ecb5d40350f0a0209713f00d9c1a276bca6)).
 
-Para que o estilo seja aplicado nas páginas HTML é necessário informar ao Django que existem arquivos estáticos e isso é feito usando código Python (_commit_ [db95f53](https://github.com/brnocesar/alura/commit/db95f539eb4a65231fd335d21c578d236c698aa3)):
+Para que o estilo seja aplicado nas páginas HTML é necessário informar ao Django que existem arquivos estáticos e isso é feito usando código Python (_commit_ [db95f53](https://github.com/brnocesar/django-receitas/commit/db95f539eb4a65231fd335d21c578d236c698aa3)):
 
-- na primeira linha do arquivo HTML adicionamos `{% load static %}`, que indica seram carregados arquivos estáticos
+- na primeira linha do arquivo HTML adicionamos `{% load static %}`, indicando que seram carregados arquivos estáticos
 - em todas as referências de caminho devemos adicioná-las utilizando uma sintaxe específica para que o código Python possa ser interpretado: `{% static '<caminho relativo com extensão>' %}`
 - também precisamos usar código Python para indicar os _links/URLs_: `{% url '<nome da rota>' %}`
 
@@ -178,29 +180,29 @@ Para que o estilo seja aplicado nas páginas HTML é necessário informar ao Dja
 
 ### 4.2 Criando uma nova _view_
 
-Vamos adicionar uma nova _view_ ao nosso _app_ e uma rota para acessá-la. No arquivo `apps/receitas/urls.py` adicionamos mais um `path()` na lista `urlpatterns`: definindo o _path_ da rota como `receita`, o método em `app/receitas/views.py` que vai retornar a página HTML renderizada e o nome da rota. Além disso temos que escrever o método `receita()` em `app/receitas/views.py`.
+Vamos adicionar uma nova _view_ ao nosso _app_ e uma rota para acessá-la. No arquivo `apps/receitas/urls.py` adicionamos mais um `path()` na lista `urlpatterns` definindo na ordem: o recurso da rota como `receita`, o método em `app/receitas/views.py` que vai retornar a página HTML renderizada e o nome da rota. Além disso, obviamente temos que escrever o método `receita()` em `app/receitas/views.py` retornando essa _view_.
 
-Para que seja possível acessar essa nova _view_ precisamos ainda "embedar" os _links_ em código Python (_commit_ [ab93b6e](https://github.com/brnocesar/alura/commit/ab93b6e4b30b141c5ba42070e813059833edc67f)).
+Para que seja possível acessar essa nova _view_ precisamos ainda "embedar" os _links_ em código Python (_commit_ [ab93b6e](https://github.com/brnocesar/django-receitas/commit/ab93b6e4b30b141c5ba42070e813059833edc67f)).
 
 ### 4.3 Extendendo código HTML
 
 Pelos dois arquivos HTML que temos, podemos supor que a estrutura básica das páginas da nossa aplicação vai ser a igual para todas, compartilhando elementos como _header_ e _footer_. Então vamos separar todo esse código comum em arquivos próprios e fazer as _views_ "extenderem" esses arquivos.
 
-Primeiro vamos criar nosso _layout_ base. No arquivo `apps/receitas/templates/base.html` copiamos todo conteúdo do arquivo `apps/receitas/templates/index.html` exceto o conteúdo dentro da _tag_ `<body>`, com exceção da declaração dos _scripts_ (deu pra entender...). Logo após a abertura da _tag_ `<body>` devemos indicar que ali vai "entrar" um bloco de código HTML, e fazemos isso através de código Python, `{% block content %} {% endblock %}`.
+Primeiro vamos criar nosso _layout_ base. No arquivo `apps/receitas/templates/base.html` copiamos todo conteúdo do arquivo `apps/receitas/templates/index.html` exceto o conteúdo dentro da _tag_ `<body>`, com exceção da declaração dos _scripts_ (deu pra entender...). Logo após a abertura da _tag_ `<body>` devemos indicar que ali vai "entrar" um bloco de código HTML, e os delimitadores desse bloco são escritos em código Python: `{% block content %} {% endblock %}`.
 
-No arquivo `apps/receitas/templates/index.html` mantemos apenas as linhas que não foram copiadas para o _layout_ básico e indicamos que serão carregados arquivos estáticos (`{% load static %}`). Para tirar proveito do _layout_ base devemos extender este e "envelopar" seu conteúdo como um bloco (_commit_ [136f8d5](https://github.com/brnocesar/alura/commit/136f8d5249face18352eb5404dab55eb1b789783)). E podemos realizar o mesmo procedimento no arquivo `apps/receitas/templates/receita.html` (_commit_ [9a13d7a](https://github.com/brnocesar/alura/commit/9a13d7a1fd7a0358cd244a8dfa68ce43fe6a3890)).
+No arquivo `apps/receitas/templates/index.html` mantemos apenas as linhas que não foram copiadas para o _layout_ básico e a indicação que serão carregados arquivos estáticos (`{% load static %}`). Para tirar proveito do _layout_ base devemos extender este (`{% extends 'base.html' %}`) e "envelopar" seu conteúdo como um bloco usando os delimitadores mencionados no parágrafo anterior (_commit_ [136f8d5](https://github.com/brnocesar/django-receitas/commit/136f8d5249face18352eb5404dab55eb1b789783)). E podemos realizar o mesmo procedimento para a _view_ de receitas (_commit_ [9a13d7a](https://github.com/brnocesar/django-receitas/commit/9a13d7a1fd7a0358cd244a8dfa68ce43fe6a3890)).
 
-### 4.4 _Patials_
+### 4.4 _Partials_
 
 Podemos "componentizar" ainda mais os elementos do nosso layout usando o resurso de _partials_, pequenos fragmentos de código HTML que podem ser compartilhados com várias _views_.
 
-Começamos criando a pasta `apps/receitas/templates/partials` e dentro dela teremos arquivos para cada um dos _partials_ que vamos implementar, _header_ e _footer_. A partir disso basta copiar os respectivos códigos para cada arquivo, indicando que serão carregados arquivos estáticos. Para incluir os _partials_ usamos código Python `{% include 'partials/<nome do partial>.html' %}`. Note que o _partial_ do _footer_ foi adicionado apenas no _layout_ base, enquanto que o do _header_ precisou ser adicionado nas duas _views_ (_commit_ [193f407](https://github.com/brnocesar/alura/commit/193f40700c2fca38fe1ba14cc9f77e196df6a0b3)).
+Começamos criando a pasta `apps/receitas/templates/partials` e dentro dela teremos arquivos para cada um dos _partials_ que vamos implementar, _header_ e _footer_. A partir disso basta copiar os respectivos códigos para cada arquivo, indicando que serão carregados arquivos estáticos. Para incluir os _partials_ usamos código Python `{% include 'partials/<nome do partial>.html' %}`. Note que o _partial_ do _footer_ foi adicionado apenas no _layout_ base, enquanto que o do _header_ precisou ser adicionado nas duas _views_ (_commit_ [193f407](https://github.com/brnocesar/django-receitas/commit/193f40700c2fca38fe1ba14cc9f77e196df6a0b3)).
 
-Uma conveção bastante adotada é nomear as _partials_ começando com um _underline_, tornando claro do que se trata o arquivo. Neste projeto o "_layout_ base" também foi nomeado seguindo dessa forma (_commit_ [7faee76](https://github.com/brnocesar/alura/commit/7faee768ca20b8c6bf20ddc40a18e3de26fadbfa)).
+Uma conveção bastante adotada é nomear as _partials_ começando com um _underline_, tornando claro do que se trata o arquivo. Neste projeto o "_layout_ base" também foi nomeado seguindo dessa forma (_commit_ [7faee76](https://github.com/brnocesar/django-receitas/commit/7faee768ca20b8c6bf20ddc40a18e3de26fadbfa)).
 
 ### 4.5 Apresentando informações de forma dinâmica
 
-Agora vamos passar a enviar informações para a _view_, a partir do método que renderiza o HTML, e acessar essas informações. A primeira coisa a ser feita é modificar o método Python que renderiza a _view_, onde podemos passar uma coleção como terceiro parâmetro do método `render()`. E então na _view_ podemos usar código Python para iterar sobre essa coleção e acessar seus valores usando a notação `{{ variavel }}` (_commit_ [18fb6a5](https://github.com/brnocesar/alura/commit/18fb6a56e3a0db6cb6be93a63d41f9dd54c7feb1)).
+Agora vamos passar a enviar informações para a _view_ a partir do método que renderiza o HTML e acessa-lás. A primeira coisa a ser feita é modificar o método Python que renderiza a _view_, onde podemos passar uma coleção como terceiro parâmetro do método `render()`. E então na _view_ podemos usar código Python para iterar sobre essa coleção e acessar seus valores usando a notação `{{ variavel }}` (_commit_ [18fb6a5](https://github.com/brnocesar/django-receitas/commit/18fb6a56e3a0db6cb6be93a63d41f9dd54c7feb1)).
 
 [↑ voltar ao topo](#django-receitas)
 
@@ -214,7 +216,7 @@ Para que a nossa aplicação consiga se conectar a um banco de dados PostgreSQL,
 pip install psycopg2-binary
 ```
 
-E para finalizar a configuração do Banco de Dados, devemos colocar no arquivo `djangoreceitas/settings.py` as informações necessárias para que a aplicação saiba como se conectar ao Banco. Por padrão o SQLite já vem configurado, então basta trocar/adicionar as informações necessárias na váriavel `DATABASES` (_commit_ [b175afd](https://github.com/brnocesar/alura/commit/b175afdc8b2c84ee29011392fda9c3e0990c063a)).
+E para finalizar a configuração do Banco de Dados, devemos colocar no arquivo `djangoreceitas/settings.py` as informações necessárias para que a aplicação saiba como se conectar ao Banco. Por padrão o SQLite já vem configurado, então basta trocar/adicionar as informações necessárias na váriavel `DATABASES` (_commit_ [b175afd](https://github.com/brnocesar/django-receitas/commit/b175afdc8b2c84ee29011392fda9c3e0990c063a)).
 
 [↑ voltar ao topo](#django-receitas)
 
@@ -226,17 +228,19 @@ Agora que já temos um banco de dados configurado, Vamos começar a utilizar o r
 
 Um _model_ é uma classe Python que representa uma entidade do sistema, contendo seus atributos e comportamentos essenciais. Cada _model_ representa uma tabela no Banco de Dados, com seus atributos representando os campos da tabela e todas as _models_ no Django devem extender a classe `django.db.models.Model`.
 
-Dentro do arquivo `apps/receitas/models.py` vamos definir a _model_ `Receita` e dentro dela definimos seus atributos. A partir da biblioteca `models` podemos definir o tipo de dados para cada campo e também as _constraints_ para esses campos, como o limite de caracteres, valor padrão ou se o campo aceita valor nulo (_commit_ [7fa5a09](https://github.com/brnocesar/alura/commit/7fa5a09286d9fef71764b1cf097926071b3bd6ab)).
+Dentro do arquivo `apps/receitas/models.py` vamos definir a _model_ `Receita` e dentro dela definimos seus atributos. A partir da biblioteca `models` podemos definir o tipo de dados para cada campo e também as _constraints_ para esses campos, como o limite de caracteres, valor padrão ou se o campo aceita valor nulo (_commit_ [7fa5a09](https://github.com/brnocesar/django-receitas/commit/7fa5a09286d9fef71764b1cf097926071b3bd6ab)).
 
-Podemos definir a representação textual de um objeto utilizando o método especial `__str__` (_dunder methods_) e alterar a forma como são acessados nas _views_ (_commit_ [79a272e](https://github.com/brnocesar/alura/commit/79a272e606c33bd374223185089a1cf2f0fd3ccc)).
+Podemos definir a representação textual de um objeto utilizando o método especial `__str__` (_dunder methods_) e alterar a forma como são acessados nas _views_ (_commit_ [79a272e](https://github.com/brnocesar/django-receitas/commit/79a272e606c33bd374223185089a1cf2f0fd3ccc)).
 
 ### 6.2 _Migrations_
 
-Para mapear essa classe para uma tabela no banco de dados vamos usar o resurso de _migrations_. Com o comando abaixo criamos uma _migration_ a partir de alterações nas _models_ que ainda não estão mapeadas no Banco (_commit_ [99beaca](https://github.com/brnocesar/alura/commit/99beaca85df99f012ffa5a26fc9a92780b72f5e2)):
+Para fazer o mapeamento des classes do tipo _model_ para tabelas no banco de dados usamos o recurso de _migrations_. Com o comando abaixo criamos uma _migration_ a partir de alterações nas _models_ que ainda não estão mapeadas no Banco (_commit_ [99beaca](https://github.com/brnocesar/django-receitas/commit/99beaca85df99f012ffa5a26fc9a92780b72f5e2)):
 
 ```terminal
 python manage.py makemigrations
 ```
+
+Após rodar esse comando, por exemplo, a _migration criada agora será responsável apenas por criar a tabela de nome `receitas_receita` (_model_ receita no app receitas) com os campos correspondentes aos atributos que a model possui nesse momento.
 
 E para rodar as _migrations_ disponíveis:
 
@@ -258,13 +262,13 @@ python manage.py createsuperuser
 
 basta digitar as credências e dependendo da senha que você colocar o Django vai fornecer algumas orientações para criar uma senha mais segura.
 
-Após logar no painel do **admin** percebemos que não há nada relacionado ao app `receitas`, para que seja disponibilizado o CRUD dessa entidade é necessário registrar o _model_ em `app/receitas/admin.py` (_commit_ [a372c7b](https://github.com/brnocesar/alura/commit/a372c7bb97854f502c05ec98b187ebf7aa8d5141)). Ao recarregar a página vemos que existe uma seção dedicada aos registros do app `receitas`.
+Após logar no painel do **admin** percebemos que não há nada relacionado ao app `receitas`, para que seja disponibilizado o CRUD dessa entidade é necessário registrar o _model_ em `app/receitas/admin.py` (_commit_ [a372c7b](https://github.com/brnocesar/django-receitas/commit/a372c7bb97854f502c05ec98b187ebf7aa8d5141)). Ao recarregar a página vemos que existe uma seção dedicada aos registros do app `receitas`.
 
 ### 7.1 Customizando apresentação de dados
 
-Podemos customizar a forma como as receitas são apresentadas no Django Admin, por exemplo, apresentando alguns atributos e tornando-os links para suas receitas. Também é possível habilitar algumas funcionalidades como filtros, buscas e paginação. Para isso criamos uma classe em `apps/receitas/admin.py` extendendo `admin.ModelAdmin` e definimos as alterações que quisérmos (_commit_ [cb855da](https://github.com/brnocesar/alura/commit/cb855daac4f4385ffb7567ad9c18889cc4588720)).
+Podemos customizar a forma como as receitas são apresentadas no Django Admin. Por exemplo, apresentando mais atributos e tornando alguns links para suas receitas. Também é podemos habilitar algumas funcionalidades como filtros, buscas e paginação. Para isso criamos uma classe em `apps/receitas/admin.py` extendendo `admin.ModelAdmin` e definimos as alterações que quisermos (_commit_ [cb855da](https://github.com/brnocesar/django-receitas/commit/cb855daac4f4385ffb7567ad9c18889cc4588720)), não esquecendo de também registrar essa classe.
 
-Também podemos editar alguns campos dos registros direto na página de listagem, para isso definimos a variável `list_editable` em `apps/nome_do_app/admin.py` atribuindo uma tupla ou lista com os campos que queremos permitir a edição (_commit_ [c1eddb8](https://github.com/brnocesar/alura/commit/c1eddb83f202b158a1ec92c45a4e4e86f8090348)).
+É possível ainda editar alguns campos dos registros diretamente na página de listagem, para isso definimos a variável `list_editable` em `apps/nome_do_app/admin.py` atribuindo uma tupla ou lista com os campos que queremos permitir a edição (_commit_ [c1eddb8](https://github.com/brnocesar/django-receitas/commit/c1eddb83f202b158a1ec92c45a4e4e86f8090348)).
 
 [↑ voltar ao topo](#django-receitas)
 
@@ -272,25 +276,24 @@ Também podemos editar alguns campos dos registros direto na página de listagem
 
 ### 8.1 Listando as receitas
 
-Agora que temos dados de receitas armazenados no Banco de Dados podemos apresentá-los nas _views_. Para isso devemos alterar o dicionário passado por contexto para a _view_.  No método `index()` em `apps/receitas/views.py`, ao invés de passar um dicionário com valores no _hard coded_, vamos passar todos os objetos do tipo receita. Para isso vamos importar o _model_ `Receita` e usar o método `objects.all()` para recuperar todos os registros da tabela.
+Agora que temos dados de receitas armazenados no Banco de Dados podemos apresentá-los nas _views_. Para isso devemos alterar o dicionário passado por contexto para a _view_.  No método `index()` em `apps/receitas/views.py`, ao invés de passar um dicionário com valores _hard coded_, vamos passar todos os objetos do tipo receita que foram cadastrados. Para isso vamos importar o _model_ `Receita` e usar o método `objects.all()` para recuperar todos os registros da tabela.
 
-Devemos alterar a forma como é feito o acesso ao dicionário que a _view_ recebe, para que as receitas cadastradas através do Django Admin sejam apresentadas na _home_. Agora estamos enviando objetos, então podemos acessar seus atributos, e além disso, é uma boa prática verificar se a coleção de objetos não está vazia antes de iterar sobre ela (_commit_ [e444c74](https://github.com/brnocesar/alura/commit/e444c74ea7d48baeff4e18e0432870e15a3066ba)).
+Devemos alterar a forma como é feito o acesso ao dicionário que a _view_ recebe, para que as receitas cadastradas através do Django Admin sejam apresentadas na _home_. Agora estamos enviando objetos, então podemos acessar seus atributos, e além disso, é uma boa prática verificar se a coleção de objetos não está vazia antes de iterar sobre ela (_commit_ [e444c74](https://github.com/brnocesar/django-receitas/commit/e444c74ea7d48baeff4e18e0432870e15a3066ba)).
 
-Podemos utilizar filtros para selecionar os registros que serão recuperados do banco e enviados para a _view_, assim como podemos ordenar os registros recuperados em função de um campo de forma ascendente ou descendente (_commits_ [ad40637](https://github.com/brnocesar/alura/commit/ad40637edce8d62934a742c9ae7283c2fcdc223f) e [e94e15c](https://github.com/brnocesar/alura/commit/e94e15cfcb46b1607fc639eba90f16315dfa0b90)).
+Podemos utilizar filtros para selecionar os registros que serão recuperados do banco e enviados para a _view_, assim como podemos ordenar os registros recuperados em função de um campo de forma ascendente ou descendente (_commits_ [ad40637](https://github.com/brnocesar/django-receitas/commit/ad40637edce8d62934a742c9ae7283c2fcdc223f) e [e94e15c](https://github.com/brnocesar/django-receitas/commit/e94e15cfcb46b1607fc639eba90f16315dfa0b90)).
 
 ### 8.2 Detalhes de uma receita
 
-Neste ponto, se clicamos em uma das receitas apresentadas na _home_ somos redirecionados para a _view_ "detalhes de uma receita", mas é a página genérica sem as informações da receita que queremos acessar.
-Então precisamos de alguma forma indicar qual receita queremos acessar.
+Neste ponto, se clicamos em uma das receitas apresentadas na _home_ somos redirecionados para a _view_ "detalhes de uma receita", mas é a página genérica sem as informações da receita que queremos acessar. Então precisamos indicar qual é a receita correta.
 
 Para indicar que queremos acessar a página com as informações de uma receita específica devemos realizar algumas alterações:
 
 - em `apps/receitas/templates/index.html` é necessário passar o identificador único da receita (atributo `id`) como parâmetro na URL: `<a href="{% url 'receita' valor_do_identificador %}">`
 - na definição das rotas em `apps/receitas/urls.py`, devemos especificar que o recurso acessado será esse parâmetro que foi enviado pela URL: `'<int:receita_id>'`
 
-Agora que temos acesso ao identificador único, que nesse caso é a chave primária da tabela de receitas, podemos receber esse parâmetro no método `receita()` em `apps/receitas/views.py`, recuperar o registro a partir da chave primária e passar o objeto para a _view_ (_commit_ [e21e83f](https://github.com/brnocesar/alura/commit/e21e83f82013506b68e4906db1c5b089186c8626)).
+Agora que temos acesso ao identificador único, que nesse caso é a chave primária da tabela de receitas, podemos receber esse parâmetro no método `receita()` em `apps/receitas/views.py`, recuperar o registro a partir da chave primária e passar o objeto para a _view_ (_commit_ [e21e83f](https://github.com/brnocesar/django-receitas/commit/e21e83f82013506b68e4906db1c5b089186c8626)).
 
-Por fim basta apresentar os atributos do objeto na _view_ receita (_commit_ [7fcb5d5](https://github.com/brnocesar/alura/commit/7fcb5d57f203dcf148ce49933caf62dc0300b9a3)).
+Por fim basta apresentar os atributos do objeto na _view_ receita (_commit_ [7fcb5d5](https://github.com/brnocesar/django-receitas/commit/7fcb5d57f203dcf148ce49933caf62dc0300b9a3)).
 
 [↑ voltar ao topo](#django-receitas)
 
@@ -304,13 +307,13 @@ Todo o procedimento é o mesmo que foi feito para o app de receitas e a entidade
 
 Criamos a classe para representar a entidade Pessoa em `apps/pessoas/models.py` e a registramos para ser gerenciada pelo Admin em `apps/pessoas/admin.py`, aproveitando para customizar a página de listagem.
 
-E por fim, geramos as _migrations_ e a executamos (_commit_ [d502182](https://github.com/brnocesar/alura/commit/d502182088b58dbd1d348e1415b0497c51cfce17)).
+E por fim, geramos as _migrations_ e a executamos (_commit_ [d502182](https://github.com/brnocesar/django-receitas/commit/d502182088b58dbd1d348e1415b0497c51cfce17)).
 
 ### 9.2 Relacionamento _Many-to-one_
 
-Vamos definir o relacionamento entre receitas e pessoas, no caso cada pessoa pode cadastrar várias receitas e cada receita pertence a uma única pessoa. Esse tipo de relacionamento é chamado de "um para muitos" e é definido através de uma chave estrangeira, no nosso caso será uma chave estrangeira na tabela de receitas apontando para a tabela de pessoas.
+Vamos definir o relacionamento entre receitas e pessoas, no caso cada pessoa pode cadastrar várias receitas e cada receita pertence a uma única pessoa. Esse tipo de relacionamento é chamado de "um para muitos" e é definido através de uma chave estrangeira, nesse caso será uma chave estrangeira na tabela de receitas apontando para a tabela de pessoas.
 
-Adicionamos um novo campo na _model_ Receita, do tipo _ForeigKey_ e nomeando-o de acordo com a convenção sugerida na [documentação](https://docs.djangoproject.com/en/3.1/topics/db/models/#many-to-one-relationships). Geramos a _migration_ para essa alteração e a executamos (_commit_ [e157988](https://github.com/brnocesar/alura/commit/e157988bce56bb393326b9ee11a88dec2bb4f207)).
+Adicionamos um novo campo na _model_ Receita, do tipo _ForeigKey_ e nomeando-o de acordo com a convenção sugerida na [documentação](https://docs.djangoproject.com/en/3.1/topics/db/models/#many-to-one-relationships). Geramos a _migration_ para essa alteração e a executamos (_commit_ [e157988](https://github.com/brnocesar/django-receitas/commit/e157988bce56bb393326b9ee11a88dec2bb4f207)).
 
 [↑ voltar ao topo](#django-receitas)
 
@@ -328,9 +331,9 @@ Antes de gerar e rodar a _migration_ precisamos instalar um pacote necessário p
 pip install pillow
 ```
 
-então podemos atualizar o banco (_commit_ [74caf89](https://github.com/brnocesar/alura/commit/74caf893e543512c25603e82be1baf4ccad1a211)).
+então podemos atualizar o banco (_commit_ [74caf89](https://github.com/brnocesar/django-receitas/commit/74caf893e543512c25603e82be1baf4ccad1a211)).
 
-Para que seja possível apresentar essas imagens nas _views_, devemos permitir que suas URLs sejam utilizadas pela aplicação e isso é feito indicando o uso das configurações de mídia no arquivo de rotas da aplicação em `djangoreceitas/urls.py`. Após isso podemos modificar as _views_ para apresentar as imagens de cada receita (_commit_ [348567b](https://github.com/brnocesar/alura/commit/348567b18a4e1370b6581b7423416fb9b557b07e)).
+Para que seja possível apresentar essas imagens nas _views_, devemos permitir que suas URLs sejam utilizadas pela aplicação e isso é feito indicando o uso das configurações de mídia no arquivo de rotas da aplicação em `djangoreceitas/urls.py`. Após isso podemos modificar as _views_ para apresentar as imagens de cada receita (_commit_ [348567b](https://github.com/brnocesar/django-receitas/commit/348567b18a4e1370b6581b7423416fb9b557b07e)).
 
 [↑ voltar ao topo](#django-receitas)
 
