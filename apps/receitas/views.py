@@ -10,7 +10,7 @@ def index(request):
     
     receitas = receitas.order_by('-data_criacao')
     
-    return render(request, 'index.html', {'receitas': receitas})
+    return render(request, 'receitas/index.html', {'receitas': receitas})
 
 def receita(request, receita_id):
-    return render(request, 'receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
+    return render(request, 'receitas/receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
