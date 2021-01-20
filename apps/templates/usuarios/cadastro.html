@@ -22,7 +22,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="contact-form-area">
-                        <form action="" method="">
+                        <form action="{% url 'cadastro' %}" method="POST">
+                            {% csrf_token %}
                             <div class="row">
                                 <div class="col-12 col-lg-12">
                                     <label for="nome_receita"><b>Nome completo</b></label>
@@ -37,8 +38,8 @@
                                     <input type="password" class="form-control" name="password" placeholder="Digite sua senha" required>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="password2"><b>Confirmação de senha</b></label>
-                                    <input type="password" class="form-control" name="password2" placeholder="Digite sua senha mais uma vez" required>
+                                    <label for="password_confirmation"><b>Confirmação de senha</b></label>
+                                    <input type="password" class="form-control" name="password_confirmation" placeholder="Digite sua senha mais uma vez" required>
                                 </div>
                                 <div class="col-12 text-center mt-4">
                                     <button class="btn btn-success" type="submit">Criar sua conta</button>
