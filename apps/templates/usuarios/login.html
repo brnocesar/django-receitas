@@ -22,15 +22,16 @@
             <div class="row">
                 <div class="col-12">
                     <div class="contact-form-area">
-                        <form action="" method="">
+                        <form action="{% url 'login' %}" method="POST">
+                            {% csrf_token %}
                             <div class="row">
                                 <div class="col-12 col-lg-12">
                                 <label for="email"><b>Email</b></label>
                                     <input type="text" id="email" class="form-control" name="email" placeholder="Entre com o email cadastrado">
                                 </div>
                                     <div class="col-12 col-lg-12">
-                                    <label for="senha"><b>Senha</b></label>
-                                    <input id="senha" type="password" class="form-control" name="senha" placeholder="Digite aqui sua senha">
+                                    <label for="password"><b>Senha</b></label>
+                                    <input id="password" type="password" class="form-control" name="password" placeholder="Digite aqui sua senha">
                                 </div>
                                 <div class="col-12 text-center mt-5">
                                     <button class="btn btn-success" type="submit">Acessar sua conta</button>
