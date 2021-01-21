@@ -14,3 +14,6 @@ def index(request):
 
 def receita(request, receita_id):
     return render(request, 'receitas/receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
+
+def create(request):
+    return render(request, 'receitas/create.html')

@@ -21,13 +21,20 @@
 </head>
 
 <body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+        <img src="{% static 'img/core-img/pizza.png' %}" alt="">
+        <!-- <img src="{% static 'img/core-img/hamburger.png' %}" alt=""> -->
+    </div>
+
+    {% include 'partials/_header.html' %}
 
 
     {% block content %} {% endblock %}
 
     
     {% include 'partials/_footer.html' %}
-
 
     <!-- ##### All Javascript Files ##### -->
     <!-- jQuery-2.2.4 js -->
