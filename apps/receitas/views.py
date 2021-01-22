@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Receita
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 def index(request):
-    
     receitas = Receita.objects.filter(publicada=True)
     
     if 'procurar_receita' in request.GET and request.GET['procurar_receita']:
@@ -18,6 +18,7 @@ def receita(request, receita_id):
 
 def create(request):
     if not request.user.is_authenticated:
+        messages.error(request, 'Realize login para cadastrar uma receita!')
         return redirect('index')
     
     if request.method == 'POST':
@@ -42,6 +43,7 @@ def create(request):
             foto=foto
         )
         receita.save()
+        messages.success(request, 'Receita cadastrada com sucesso!')
         
         return redirect('dashboard')
     
