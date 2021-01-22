@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Receita
+from django.contrib.auth.models import User
 
 def index(request):
     
@@ -16,4 +17,32 @@ def receita(request, receita_id):
     return render(request, 'receitas/receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
 
 def create(request):
+    if not request.user.is_authenticated:
+        return redirect('index')
+    
+    if request.method == 'POST':
+        nome          = request.POST['nome']
+        ingredientes  = request.POST['ingredientes']
+        modo_preparo  = request.POST['modo_preparo']
+        tempo_preparo = request.POST['tempo_preparo']
+        rendimento    = request.POST['rendimento']
+        categoria     = request.POST['categoria']
+        foto          = request.FILES['foto']
+        # user          = request.user # porque nao assim?
+        user          = get_object_or_404(User, pk=request.user.id)
+        
+        receita = Receita.objects.create(
+            pessoa=user,
+            nome=nome,
+            ingredientes=ingredientes,
+            modo_preparo=modo_preparo,
+            tempo_preparo=tempo_preparo,
+            rendimento=rendimento,
+            categoria=categoria,
+            foto=foto
+        )
+        receita.save()
+        
+        return redirect('dashboard')
+    
     return render(request, 'receitas/create.html')
