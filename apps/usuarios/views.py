@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
+from apps.receitas.models import Receita
 
 def login(request):
     if request.method == 'POST':
@@ -62,7 +63,9 @@ def cadastro(request):
     return render(request, 'usuarios/cadastro.html')
 
 def dashboard(request):
-    if request.user.is_authenticated:
-        return render(request, 'usuarios/dashboard.html')
+    if not request.user.is_authenticated:
+        return redirect('index')
     
-    return redirect('index')
+    receitas = Receita.objects.filter(pessoa=request.user.id).order_by('data_criacao')
+    
+    return render(request, 'usuarios/dashboard.html', {'receitas': receitas})

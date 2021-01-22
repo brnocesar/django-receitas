@@ -11,6 +11,27 @@
                         <h3>Olá {{ user.username }}</h3>
                     </div>
                 </div>
+
+                {% if receitas %}
+                    {% for receita in receitas %}
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <div class="single-best-receipe-area mb-30">
+                                {% if receita.foto == '' %}
+                                    <img src="{% static 'img/bg-img/foto_receita.png' %}" alt="">
+                                {% else %}
+                                    <img src="{{ receita.foto.url }}" alt="">
+                                {% endif %}
+                                <div class="receipe-content">
+                                    <a href="{% url 'receita' receita.id %}">
+                                        <h5>{{ receita }}</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Não foram encontradas receitas.</p>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -74,8 +74,8 @@
                         <!-- Nav Start -->
                         <div class="classynav">
                             <ul>
-                                <li><a href="{% url 'index' %}">Home</a></li>
                                 {% if user.is_authenticated %}
+                                    <li><a href="{% url 'index' %}">Home</a></li>
                                     <li><a href="{% url 'dashboard' %}">Minhas receitas</a></li>
                                     <li><a href="{% url 'receita.create' %}">Nova Receita</a></li>
                                     <li><a href="{% url 'logout' %}">Logout</a></li>
