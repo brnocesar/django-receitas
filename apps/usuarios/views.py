@@ -3,12 +3,46 @@ from django.contrib.auth.models import User
 from django.contrib import auth, messages
 from apps.receitas.models import Receita
 
+def cadastro(request):
+    if request.method == 'POST':
+        nome                  = request.POST['nome']
+        email                 = request.POST['email']
+        password              = request.POST['password']
+        password_confirmation = request.POST['password_confirmation']
+        
+        erros = 0
+        if campo_vazio(nome):
+            messages.error(request, 'Campo nome é obrigratório!')
+            erros += 1
+        if campo_vazio(email):
+            messages.error(request, 'Campo email é obrigratório!')
+            erros += 1
+        if usuario_cadastrado(nome, email):
+            messages.error(request, 'Usuário já é cadastrado!')
+            erros += 1
+        if campo_vazio(password):
+            messages.error(request, 'Campo senha é obrigratório!')
+            erros += 1
+        if senhas_diferentes(password, password_confirmation):
+            messages.error(request, 'As senhas devem ser iguais!')
+            erros += 1
+        if erros > 0:
+            return redirect('cadastro')
+        
+        user = User.objects.create_user(username=nome, email=email, password=password)
+        user.save()
+        messages.success(request, f"Usuário {user.username} cadastrado com sucesso!")
+
+        return redirect('login')
+    
+    return render(request, 'usuarios/cadastro.html')
+
 def login(request):
     if request.method == 'POST':
         email    = request.POST['email']
         password = request.POST['password']
         
-        if not email.strip() or not password.strip():
+        if campo_vazio(email) or campo_vazio(password):
             messages.error(request, 'Todos os campos são obrigratórios!')
             return redirect('login')
     
@@ -24,44 +58,6 @@ def login(request):
         
     return render(request, 'usuarios/login.html')
 
-def logout(request):
-    auth.logout(request)
-    return redirect('index')
-
-def cadastro(request):
-    if request.method == 'POST':
-        nome                  = request.POST['nome']
-        email                 = request.POST['email']
-        password              = request.POST['password']
-        password_confirmation = request.POST['password_confirmation']
-        
-        erros = 0
-        if not nome.strip():
-            messages.error(request, 'Campo nome é obrigratório!')
-            erros += 1
-        if not email.strip():
-            messages.error(request, 'Campo email é obrigratório!')
-            erros += 1
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Usuário já é cadastrado!')
-            erros += 1
-        if not password.strip():
-            messages.error(request, 'Campo senha é obrigratório!')
-            erros += 1
-        if password != password_confirmation:
-            messages.error(request, 'As senhas devem ser iguais!')
-            erros += 1
-        if erros > 0:
-            return redirect('cadastro')
-        
-        user = User.objects.create_user(username=nome, email=email, password=password)
-        user.save()
-        messages.success(request, f"Usuário {user.username} cadastrado com sucesso!")
-
-        return redirect('login')
-    
-    return render(request, 'usuarios/cadastro.html')
-
 def dashboard(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Realize login para acessar a dashboard!')
@@ -70,3 +66,16 @@ def dashboard(request):
     receitas = Receita.objects.filter(pessoa=request.user.id).order_by('data_criacao')
     
     return render(request, 'usuarios/dashboard.html', {'receitas': receitas})
+
+def logout(request):
+    auth.logout(request)
+    return redirect('index')
+
+def campo_vazio(campo):
+    return not campo.strip()
+
+def usuario_cadastrado(username, email):
+    return User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists()
+
+def senhas_diferentes(password_1, password_2):
+    return password_1 != password_2

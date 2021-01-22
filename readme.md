@@ -27,6 +27,17 @@
   9.2 Relacionamento _Many-to-one_  
 10. [_Upload_ de arquivos](#10-_upload_-de-arquivos)  
   10.1 Imagens  
+11. [Formulários](#11-Formulários)  
+  11.1 App de usuários  
+  11.2 Rotas de cadastro e _login_  
+  11.3 Páginas de cadastro e _login_  
+  11.4 Requisições de formulários  
+  11.4.1 Enviando o formulário  
+  11.4.2 Acessando os campos de um formulário  
+  11.5 Cadastrando novo usuário  
+  11.6 Realizando _login_  
+  11.7 Formulário para receitas  
+12. [Mensagens de _feedback_](#11-Mensagens-de-_feedback_)  
 
 ## 0 Rodando a aplicação
 
@@ -336,6 +347,87 @@ então podemos atualizar o banco (_commit_ [74caf89](https://github.com/brnocesa
 Para que seja possível apresentar essas imagens nas _views_, devemos permitir que suas URLs sejam utilizadas pela aplicação e isso é feito indicando o uso das configurações de mídia no arquivo de rotas da aplicação em `djangoreceitas/urls.py`. Após isso podemos modificar as _views_ para apresentar as imagens de cada receita (_commit_ [348567b](https://github.com/brnocesar/django-receitas/commit/348567b18a4e1370b6581b7423416fb9b557b07e)).
 
 [↑ voltar ao topo](#django-receitas)
+
+## 11 Formulários
+
+Se verificarmos o banco de dados da aplicação vamos encontrar uma tabela chamada `auth_user`. Nessa tabela são armazenados todos os usuários do sistema, desde os comuns até os _superusers_, com acesso ao Django Admin. Os super-usuários já podem ser criados através da linha de comando, então vamos criar um app de usuários para permitir que novos usuários se cadastrem no sistema sem precisar do privélio de ser um super-usuário. E para isso vamos precisar de páginas com formulários específicos para essas ações
+
+### 11.1 App de usuários
+
+O procedimento para criar um novo app dentro da pasta `apps` é: primeiro criar a pasta do novo app e então rodar o comando com passando este _path_:
+
+```terminal
+mkdir apps/usuarios
+python manage.py startapp usuarios ./apps/usuarios
+```
+
+após isso ainda é necessário registrar o app nas configurações da aplicação adicionando-o na lista `INSTALLED_APPS` (_commit_ [850190d](https://github.com/brnocesar/django-receitas/commit/850190db6f5b40d6087e126cb9fea6e85826a323)).
+
+### 11.2 Rotas de cadastro e _login_
+
+Vamos começar essa parte tratando das rotas. Criamos o arquivo de rotas (`apps/usuarios/urls.py`) para o app, definimos os recursos acessados para as páginas e registramos essas rotas nas urls da aplicação (`djangoreceitas/urls.py`). Note que podemos definir um prefixo para as rotas do app (_commit_ [ccce69a](https://github.com/brnocesar/django-receitas/commit/ccce69a590e9697fc877e2382e3e914cb2cab3e4)).
+
+### 11.3 Páginas de cadastro e _login_
+
+Antes de iniciar a implementação da primeira página que é a de cadastro, precisamos lidar com os templates base. O template básico e os _partials_ foram definidos dentro do app de receitas, mas agora que a aplicação está crescendo e temos mais apps que faram uso desses recursos devemos mover essa pasta. O ideal é que os templates fiquem no mesmo nível dos apps e não dentro de um deles, então movemos a pasta `templates` de `apps/receitas` para `apps`. Além disso devemos alterar o local da pasta `templates` nas configurações da aplicação (_commit_ [c7bbedf](https://github.com/brnocesar/django-receitas/commit/c7bbedfa2786c704a139405e64ee921fa8e19382)).
+
+Para organizar melhor as _views_ podemos criar pastas para cada um dos apps dentro de `templates`, lembrando de indicar a pasta ao retornar a _view_, começando com as páginas do app de receitas (_commit_ [f0d35cc](https://github.com/brnocesar/django-receitas/commit/f0d35ccaaf230e2bfafb4b384b5a1837f909c297)) e depois com as paǵinas de usuários (_commit_ [13d0c6a](https://github.com/brnocesar/django-receitas/commit/13d0c6a9918286cb2d72a02c6d750b5c2039e01f)).
+
+### 11.4 Requisições de formulários
+
+#### 11.4.1 Enviando o formulário
+
+Agora que já temos uma página para os formulários podemos começar a pensar em como enviar as informações nele preenchidas e como acessá-las na nossa aplicação.
+
+A primeira coisa que faremos é especificar o tipo de requisição em que o formulário será submetido, como se tratam de informações sensíveis (senha) precisamos utilizar o método `POST` para a requisição, definindo isso no atributo `method` da _tag_ `<form>`. Após isso definimos para onde a requisição do formulário será enviada, passando o nome da rota através de código Python. Além disso devemos incluir o _token_ CSRF dentro do formulário para garantir que a requisição está sendo enviada pela nossa aplicação.
+
+```python
+<form action="{% url 'nome_da_rota' %}" method="POST">
+    {% csrf_token %}
+    ...
+</form>
+```
+
+Ao contrário de outros _frameworks_ em que você define o método de acesso da requisição para cada rota, no Django mapeamos apenas a rota para um método (código que será  executado) e dentro do código devemos verificar o tipo de método (requisição) para decidir o que fazer.
+
+#### 11.4.2 Acessando os campos de um formulário
+
+Agora que estamos conseguindo enviar o formulário com os campos preenchidos, podemos acessar esses campos no método (código) mapeado para a rota definida como `action` do formulário. Dentro desse método temos acesso à requisição através do objeto `request` obtido por injeção de dependência. Como a requisição foi feita usando o método `POST`, dentro do atributo de mesmo nome vamos acessar um dicionário com todos os campos enviados (_commit_ [c5b1601](https://github.com/brnocesar/django-receitas/commit/c5b160139502536430e2760b569ac7d8f5a4b990)):
+
+```python
+request.POST
+```
+
+### 11.5 Cadastrando novo usuário
+
+Como estamos usando uma tabela criada pelo Django, podemos importar o model que modela a tabela de usuários e utilizar _built in functions_ para adicionar um novo usuário no sistema (não precisamos nem "encriptar" a senha). Antes disso podemos fazer validações básicas sobre os dados que estamso recebendo do formulário (_commit_ [a663965](https://github.com/brnocesar/django-receitas/commit/a6639650d9401785d39275c8e685a8a79c5bf88a)).
+
+### 11.6 Realizando _login_
+
+O processo de autenticação de um usuário começa com o formulário de _login_ e devemos enviar seus campos para o código que irá processar essa ação, esse processo é muito similar ao cadastro de novos usuários. Como a forma padrão de autenticação do Django é feita em função dos valores de `username` e senha, após nos certificarmos que os valores obtidos do formulário são válidos, precisamos obter o `username` do usuário. Então podemos realizar o _login_ caso o usuário exista e redirecioná-lo para sua _dashboard_ (_commit_ [4f42d15](https://github.com/brnocesar/django-receitas/commit/4f42d15eaf95a11042c08495a2166f09055ecd9b)).
+
+Agora podemos fazer alguns ajustes no _layout_ de modo que os botões do _header_ façam mais sentido para usuários logados, implementar a funcionalidade de _logout_ e impedir que usuários não autenticados não acessem algumas páginas (_commit_ [9c3a304](https://github.com/brnocesar/django-receitas/commit/9c3a3044a79c310f38ea995e3e7edba5a38b1555)).
+
+### 11.7 Formulário para receitas
+
+Vamos montar um formulário para os usuários autenticados sejam capazes de cadastrar suas receitas, então precisamos criar a rota e a _view_ com o formulário (_commit_ [21c69f3](https://github.com/brnocesar/django-receitas/commit/21c69f3e68f6891d6abd82e0c1bbab89d7ef9155)).
+
+Anteriormente quando a única forma de cadastro de receitas era através do Django Admin, relacionamos as receitas com a classe `Pessoa`. Agora que usuários autenticados podem cadastrar receitas na aplicação, vamos relacionar as receitas com a classe `User`. Para isso basta importar a _model_ de usuário e substituir na declaração do atributo `pessoa`. Para que essa alteração tenha efeito no Banco precisamos gerar uma _migration_ com as alterações e executá-la (_commit_ [3eee356](https://github.com/brnocesar/django-receitas/commit/3eee356baa4a1b1de761df287fdafae277536e5c)). Os comandos necessários são:
+
+```terminal
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Agora podemos receber os campos do formulário e criar um novo registro do tipo `Receita`. Com exceção do campo `foto`, todos os campos ficam disponíveis no dicionário do atributo `POST` do objeto `request`. A foto foi enviada através de um _input_ do tipo arquivo, então a acessamos no atributo `FILES`. Para criar um registro do tipo Receita usamos o método `create` passando cada um dos campos recebidos na requisição e então salvamos o objeto criado (_commit_ [1b4275f](https://github.com/brnocesar/django-receitas/commit/1b4275f5ed72759ab2aec884c70e2dc04c535fbb)).
+
+Após realizar o cadastro da nova receita, redirecionamos o usuário para sua _dashboard_ onde serão apresentadas apenas as suas receitas (_commit_ [13d19cc](https://github.com/brnocesar/django-receitas/commit/13d19cc3d04730188a371a81cb07d16b538faa23)).
+
+## 12 Mensagens de alerta
+
+O Django já nos fornece um sistema de [mensagens](https://docs.djangoproject.com/en/3.1/ref/contrib/messages/) de alerta (_feedback messages_) com vários níveis/tipos que podems ser definidos através da variável `MESSAGE_TAGS` em `djangoreceitas/settings.py`. Podemos aproveitar o estilo das caixas de alertas do [Bootstrap](https://getbootstrap.com/docs/4.0/components/alerts/) e definir as _tags_ de mensagens em função dessas classes.
+
+Também precisamos criar um componente (_partial_) que irá conter o HTML da mensagem de alerta e podemos adicioná-lo no _layout_ base (_commit_ [b50c0a9](https://github.com/brnocesar/django-receitas/commit/b50c0a97261990faaafcf79cbe6678364cf75177)). Após isso podemos definir as mensagens com o devido tipo e conteúdo de acordo com a situação (_commit_ [3e2e7fe](https://github.com/brnocesar/django-receitas/commit/3e2e7fe826a4751962bcb9e4eacb26087b52a6b5)).
 
 ## Apêndices
 
