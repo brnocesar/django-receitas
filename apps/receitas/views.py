@@ -48,3 +48,11 @@ def create(request):
         return redirect('dashboard')
     
     return render(request, 'receitas/create.html')
+
+def destroy(request, receita_id):
+    # abstrair isso para um metodo que da um retorno mais adequado no caso de nao existir
+    # ou usar algo que de pra verificar se nao existe
+    receita = get_object_or_404(Receita, pk=receita_id)
+    receita.delete()
+    
+    return redirect('dashboard')

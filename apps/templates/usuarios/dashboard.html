@@ -25,6 +25,7 @@
                                     <a href="{% url 'receita' receita.id %}">
                                         <h5>{{ receita }}</h5>
                                     </a>
+                                    <a href="{% url 'receita.destroy' receita.id %}" type="button" class="btn btn-danger">Deletar</a>
                                 </div>
                             </div>
                         </div>
