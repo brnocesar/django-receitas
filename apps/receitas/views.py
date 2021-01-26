@@ -6,20 +6,17 @@ from django.contrib import messages
 def index(request):
     receitas = Receita.objects.filter(publicada=True)
     
-    if 'procurar_receita' in request.GET and request.GET['procurar_receita']:
-        receitas = receitas.filter(nome__icontains=request.GET['procurar_receita'])
+    if 'procurar' in request.GET and request.GET['procurar']:
+        receitas = receitas.filter(nome__icontains=request.GET['procurar'])
     
     receitas = receitas.order_by('-data_criacao')
     
     return render(request, 'receitas/index.html', {'receitas': receitas})
 
-def receita(request, receita_id):
-    return render(request, 'receitas/receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
-
 def create(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Realize login para cadastrar uma receita!')
-        return redirect('index')
+        return redirect('receita.index')
     
     if request.method == 'POST':
         nome          = request.POST['nome']
@@ -48,6 +45,9 @@ def create(request):
         return redirect('dashboard')
     
     return render(request, 'receitas/create.html')
+
+def show(request, receita_id):
+    return render(request, 'receitas/receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
 
 def edit(request, receita_id):
     if request.method == 'POST':

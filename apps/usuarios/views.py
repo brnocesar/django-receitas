@@ -69,7 +69,7 @@ def dashboard(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('index')
+    return redirect('receita.index')
 
 def campo_vazio(campo):
     return not campo.strip()

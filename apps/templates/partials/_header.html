@@ -1,20 +1,6 @@
 {% load static %}
-<!-- Search Wrapper -->
-<div class="search-wrapper">
-    <!-- Close Btn -->
-    <div class="close-btn"><i class="fa fa-times" aria-hidden="true"></i></div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <form action="{% url 'index' %}" method="GET">
-                    <input type="search" name="procurar_receita" placeholder="Uma receita especial...">
-                    <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'partials/_search.html' %}
 
 <!-- ##### Header Area Start ##### -->
 <header class="header-area">
@@ -54,7 +40,7 @@
                 <nav class="classy-navbar justify-content-between" id="deliciousNav">
 
                     <!-- Logo -->
-                    <a class="nav-brand" href="{% url 'index' %}"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
+                    <a class="nav-brand" href="{% url 'receita.index' %}"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
 
                     <!-- Navbar Toggler -->
                     <div class="classy-navbar-toggler">
@@ -75,7 +61,7 @@
                         <div class="classynav">
                             <ul>
                                 {% if user.is_authenticated %}
-                                    <li><a href="{% url 'index' %}">Home</a></li>
+                                    <li><a href="{% url 'receita.index' %}">Home</a></li>
                                     <li><a href="{% url 'dashboard' %}">Minhas receitas</a></li>
                                     <li><a href="{% url 'receita.create' %}">Nova Receita</a></li>
                                     <li><a href="{% url 'logout' %}">Logout</a></li>
@@ -96,4 +82,3 @@
         </div>
     </div>
 </header>
-
