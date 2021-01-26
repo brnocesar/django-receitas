@@ -1,0 +1,75 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block content %}
+    
+    <!-- ##### Contact Form Area Start ##### -->
+    <div class="contact-area section-padding-0-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Edite sua receita, {{ user.username }} :)</h3>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-12">
+                <p>Todos os campos são obrigatórios</p>
+                    <div class="contact-form-area">
+                        <form action="{% url 'receita.edit' receita.id %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- <input type="text" id="receita_id" class="form-control" name="receita_id" value="{{receita.id}}" hidden> -->
+                            <div class="row">
+                                <div class="col-12 col-lg-12">
+                                    <label for="nome"><b>Título da receita</b></label>
+                                    <input type="text" id="nome" class="form-control" name="nome" placeholder="Ex. Suco de limão" 
+                                        required value="{{receita.nome}}" />
+                                </div>
+                                <div class="col-12">
+                                    <label for="ingredientes"><b>Ingredientes</b></label>
+                                    <textarea class="form-control" name="ingredientes" cols="30" rows="10" placeholder="Ex. 2 Limões &#10;200ml de água" 
+                                        required
+                                    >{{receita.ingredientes}}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="modo_preparo"><b>Modo de preparo</b></label>
+                                    <textarea class="form-control" name="modo_preparo" cols="30" rows="10" placeholder="Ex. Corte o limão com cuidado e exprema no copo  &#10;Misture com a água e sirva." 
+                                        required
+                                    >{{receita.modo_preparo}}</textarea>
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="tempo_preparo"><b>Tempo de preparo (minutos)</b></label>
+                                    <input type="number" class="form-control" name="tempo_preparo" placeholder="Ex. 2" 
+                                        required  value="{{receita.tempo_preparo}}" />
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="rendimento"><b>Rendimento</b></label>
+                                    <input type="text" class="form-control" name="rendimento" placeholder="Ex. serve 1 pessoa" 
+                                        required value="{{receita.rendimento}}" />
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="categoria"><b>Categoria da receita</b></label>
+                                    <input type="text" class="form-control" name="categoria" placeholder="Ex. Sucos e bebidas" 
+                                        required value="{{receita.categoria}}" />
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="foto"><b>Foto utilizada</b></label>
+                                    <img src="{{ receita.foto.url }}" alt="Foto ilustrativa da receita">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="foto"><b>Adicionar nova foto</b></label>
+                                    <input type="file" class="form-control" name="foto" />
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button class="btn delicious-btn mt-30" type="submit">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
