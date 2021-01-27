@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Receita
+from apps.receitas.models import Receita
 from django.contrib.auth.models import User
 from django.contrib import messages
 
