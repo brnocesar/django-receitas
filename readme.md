@@ -27,7 +27,7 @@
   9.2 Relacionamento _Many-to-one_  
 10. [_Upload_ de arquivos](#10-_upload_-de-arquivos)  
   10.1 Imagens  
-11. [Formulários](#11-Formulários)  
+11. [Formulários](#11-formulários)  
   11.1 App de usuários  
   11.2 Rotas de cadastro e _login_  
   11.3 Páginas de cadastro e _login_  
@@ -37,7 +37,13 @@
   11.5 Cadastrando novo usuário  
   11.6 Realizando _login_  
   11.7 Formulário para receitas  
-12. [Mensagens de _feedback_](#11-Mensagens-de-_feedback_)  
+12. [Mensagens de _feedback_](#12-mensagens-de-_feedback_)  
+13. [Finalizando o CRUD de receitas](#13-finalizando-o-crud-de-receitas)  
+  13.1 Deletando uma receita  
+  13.2 Editando uma receita  
+14. [Refatorando o projeto](#14-refatorando-o-projeto)  
+  14.1 Removendo um app  
+15. [Paginação](#15-paginação)  
 
 ## 0 Rodando a aplicação
 
@@ -140,7 +146,22 @@ python manage.py startapp receitas ./apps/receitas
 
 ### 3.2 Registrando o app
 
-Verificamos o nome do app no arquivo `apps/receitas/apps.py` e adicionamos na lista `INSTALLED_APPS` do arquivo `djangoreceitas/settings.py`. Se o app não estiver na raiz do projeto deve ser colocado o _dot path_ (_commit_ [3657009](https://github.com/brnocesar/django-receitas/commit/36570099ac3a94c74e3e2ec56a92cf5801cad42a)).
+Verificamos o nome do app no arquivo `apps/receitas/apps.py` e adicionamos na lista `INSTALLED_APPS` do arquivo `djangoreceitas/settings.py`. Se o app não estiver na raiz do projeto é necessário colocar seu _dot path_ (_commit_ [3657009](https://github.com/brnocesar/django-receitas/commit/36570099ac3a94c74e3e2ec56a92cf5801cad42a)). Implementando dessa forma é necessário sempre adicionar o `apps.` junto ao nome do app ao fazer sua importação.
+
+Uma outra abordagem é definir a raiz dos apps nas configurações da aplicação, em `djangoreceitas/settings.py`. Assim poderíamos referenciar os apps apenas por seus nomes, sem a necessidade de passar o `apps.` antes:
+
+```python
+import os.path, sys
+
+PROJECT_ROOT = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(PROJECT_ROOT, '../apps'))
+
+INSTALLED_APPS = [
+    ...
+    'receitas',
+    'usuarios',
+]
+```
 
 ### 3.3 Primeira rota
 
@@ -423,11 +444,52 @@ Agora podemos receber os campos do formulário e criar um novo registro do tipo 
 
 Após realizar o cadastro da nova receita, redirecionamos o usuário para sua _dashboard_ onde serão apresentadas apenas as suas receitas (_commit_ [13d19cc](https://github.com/brnocesar/django-receitas/commit/13d19cc3d04730188a371a81cb07d16b538faa23)).
 
-## 12 Mensagens de alerta
+## 12 Mensagens de _feedback_
 
 O Django já nos fornece um sistema de [mensagens](https://docs.djangoproject.com/en/3.1/ref/contrib/messages/) de alerta (_feedback messages_) com vários níveis/tipos que podems ser definidos através da variável `MESSAGE_TAGS` em `djangoreceitas/settings.py`. Podemos aproveitar o estilo das caixas de alertas do [Bootstrap](https://getbootstrap.com/docs/4.0/components/alerts/) e definir as _tags_ de mensagens em função dessas classes.
 
 Também precisamos criar um componente (_partial_) que irá conter o HTML da mensagem de alerta e podemos adicioná-lo no _layout_ base (_commit_ [b50c0a9](https://github.com/brnocesar/django-receitas/commit/b50c0a97261990faaafcf79cbe6678364cf75177)). Após isso podemos definir as mensagens com o devido tipo e conteúdo de acordo com a situação (_commit_ [3e2e7fe](https://github.com/brnocesar/django-receitas/commit/3e2e7fe826a4751962bcb9e4eacb26087b52a6b5)).
+
+## 13 Finalizando o CRUD de receitas
+
+### 13.1 Deletando uma receita
+
+Vamos acessar essa funcionalidade através da _dashboard_ do usuário. Então colocamos
+Começamos escrevendo um método chamado `delete()` em `apps/receitas/views.py`, que fará a exclusão do registro. Definimos uma rota para esse método em `apps/receitas/urls.py` e adicionamos um botão na _view_ `apps/templates/usuarios/dashboard.html` que permitirá acessar essa funcionalidade (_commit_ [67eb563](https://github.com/brnocesar/django-receitas/commit/67eb563b3156525694d400213ea58dd33e7faa47)) (E como especifica se é GET ou POST?).
+
+### 13.2 Editando uma receita
+
+Para essa funcionalidade devemos criar uma _view_ parecida com a `create`, mas devemos trazer os campos preenchidos. O processo não possui nada de novo em relação ao que já foi implementado (_commit_ [a50b8e7](https://github.com/brnocesar/django-receitas/commit/a50b8e7e4bdcb6abf02c7bff5969e8151f01ff42)).
+
+## 14 Refatorando o projeto
+
+### 14.1 Removendo um app
+
+Agora que temos implementado o registro e autenticação de usuários e atribuímos as receitas criadas a um usuário cadastrado, não precisamos mais do app de pessoas.
+
+Podemos começar removendo o app `Pessoas` da lista `INSTALLED_APPS` em `djangoreceitas/settings.py`, em nosso caso vamos ter um problema devido a uma _migration_ que faz uso desse app, lembrando que inicialmente um _model_ desse app estava relacionado com o _model_ `Receita` dos app `Receitas`. Portanto precisamos remover todos os vínculos que o app `Pessoas` tenha com nossa aplicação: em _views_, _migrations_ e no _controller_.
+
+Aqui no nosso projeto podemos resolver isso com apenas algumas alterações em uma das _migrations_ do app `Receitas`. Devemos copiar de `apps/receitas/migrations/0005_auto_20210121_1324.py` o código que relaciona a tabela de usuários com receita e substituir em `apps/receitas/migrations/0002_receita_pessoa.py` onde era feito o relacionamento com pessoas, não esquecendo de trazer os devidos _imports_ caso necessário. Nessa última _migration_ também apagamos a dependência do app `Pessoa` (_commit_ [d6d2543](https://github.com/brnocesar/django-receitas/commit/d6d254338d0e410bcf88a7803946a9598c5fd40b)).
+
+Para remover completamente os traços restates do app de pessoas devemos excluir seu diretório, `apps/pessoas` (_commit_ [8f3e7e1](https://github.com/brnocesar/django-receitas/commit/8f3e7e1c09f553775b671b566d3d45bcd604b348)). atualizar o banco e remover a tabela de pessoas temos duas opções: deletar apenas a tabela de pessoas na mão; ou deletar toda a Base de dados, recriá-la e rodar as migrations novamente.
+
+### 14.2 Modularizando o arquivo _views_
+
+De modo a melhorar a organização dos nossos arquivos começamos alterando alguns nomes de rotas para que fiquem mais semânticos (_commit_ [f5f25f5](https://github.com/brnocesar/django-receitas/commit/f5f25f5761681002881fd1bbc0ff7ae33b8d5db6)).
+
+Outra coisa que podemos fazer é modularizar o código executado quando uma rota é acessada. Até agora os métodos que são mapeados por rotas e retornam as páginas renderizadas ou executam alguma outra ação ficam todos no arquivo `views.py` na raiz de cada app. Vamos criar uma pasta `src` na raiz de cada app e a partir disso melhorar a forma como esse código é organizado.
+
+Começamos movendo o arquivo `apps/receitas/views.py` para a pasta `apps/receitas/src` e o renomeamos para `controller.py`. A idéia é que dentro desse arquivo fiquem apenas as funções acessadas por meio de rotas. Dessa forma vamos manter isolado todo código que precisa processar alguma informação fornecida pelo usuário e retornar uma resposta a partir disso (melhorar essa frase).
+
+Outra coisa que poderíamos fazer é definir um inicializador dentro dessa pasta para que ela seja reconhecida como um pacote e possa ser importada em outras partes do programa. Para isso criamos um arquivo chamado `__init__.py` dentro de `apps/receitas/src` e nele importaríamos todos os arquivos dentro do pacote. Isso permitiria que no arquico de rotas a importação fosse escrita como `from .src import *` ao invés de `from .src.controller import *`. Como minha idéia é que seja possível acessar apenas as funções dentro de `apps/receitas/src/controller.py`, a forma como ficou implementada é mais adequada (_commit_ [a3fa3d0](https://github.com/brnocesar/django-receitas/commit/a3fa3d0f7b59d2623a7341e14e621873165e3c1a)).
+
+Ajustes similares e alterações na conveção de como nomear as rotas foram feitas no app de usuários (_commit_ [8047bdc](https://github.com/brnocesar/django-receitas/commit/8047bdc62ae361f4131a8d9918d17629f41e8e06)).
+
+## 15 Paginação
+
+Conforme a aplicação for crescendo e mais receitas forem sendo cadastradas, o recurso de paginação se tornará indispensável para que o usuário tenha uma boa navegação nas páginas de listagem. Então vamos implementar essa funcionalidade.
+
+Começamos pelo método `index` do _controller_ de receitas, importando alguns componentes do pacote Paginator do Django, definimos a quantidade de itens por página, recuperamos da URL o parâmetro indicando a página e retornamos a coleção da página selecionada. Em seguida implementamos o componente de paginação para a _view_ (_commit_ [](https://github.com/brnocesar/django-receitas/commit/)).
 
 ## Apêndices
 
