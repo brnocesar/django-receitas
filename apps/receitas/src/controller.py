@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from apps.receitas.models import Receita
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
     receitas = Receita.objects.filter(publicada=True)
@@ -9,9 +10,12 @@ def index(request):
     if 'procurar' in request.GET and request.GET['procurar']:
         receitas = receitas.filter(nome__icontains=request.GET['procurar'])
     
-    receitas = receitas.order_by('-data_criacao')
+    receitas   = receitas.order_by('-data_criacao')
+    paginadas  = Paginator(receitas, 6)
+    pagina     = request.GET.get('pag')
+    por_pagina = paginadas.get_page(pagina)
     
-    return render(request, 'receitas/index.html', {'receitas': receitas})
+    return render(request, 'receitas/index.html', {'receitas': por_pagina})
 
 def create(request):
     if not request.user.is_authenticated:
