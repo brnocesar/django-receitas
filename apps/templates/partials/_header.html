@@ -62,12 +62,12 @@
                             <ul>
                                 {% if user.is_authenticated %}
                                     <li><a href="{% url 'receita.index' %}">Home</a></li>
-                                    <li><a href="{% url 'dashboard' %}">Minhas receitas</a></li>
+                                    <li><a href="{% url 'usuarios.dashboard' %}">Minhas receitas</a></li>
                                     <li><a href="{% url 'receita.create' %}">Nova Receita</a></li>
-                                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                                    <li><a href="{% url 'usuarios.logout' %}">Logout</a></li>
                                 {% else %}
                                     <li><a href="{% url 'cadastro' %}">Cadastro</a></li>
-                                    <li><a href="{% url 'login' %}">Login</a></li>
+                                    <li><a href="{% url 'usuarios.login' %}">Login</a></li>
                                 {% endif %}
                             </ul>
 

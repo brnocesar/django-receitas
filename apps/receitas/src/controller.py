@@ -42,7 +42,7 @@ def create(request):
         receita.save()
         messages.success(request, 'Receita cadastrada com sucesso!')
         
-        return redirect('dashboard')
+        return redirect('usuarios.dashboard')
     
     return render(request, 'receitas/create.html')
 
@@ -61,7 +61,7 @@ def edit(request, receita_id):
         receita.foto          = request.FILES['foto'] if 'foto' in request.FILES else receita.foto
         receita.save()
         
-        return redirect('dashboard') # redirecionar para show
+        return redirect('usuarios.dashboard') # redirecionar para show
     
     return render(request, 'receitas/edit.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
 
@@ -71,4 +71,4 @@ def destroy(request, receita_id):
     receita = get_object_or_404(Receita, pk=receita_id)
     receita.delete()
     
-    return redirect('dashboard')
+    return redirect('usuarios.dashboard')

@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth, messages
 from apps.receitas.models import Receita
+from .validacoes import *
 
-def cadastro(request):
+def create(request):
     if request.method == 'POST':
         nome                  = request.POST['nome']
         email                 = request.POST['email']
@@ -33,7 +34,7 @@ def cadastro(request):
         user.save()
         messages.success(request, f"Usuário {user.username} cadastrado com sucesso!")
 
-        return redirect('login')
+        return redirect('usuarios.login')
     
     return render(request, 'usuarios/cadastro.html')
 
@@ -44,7 +45,7 @@ def login(request):
         
         if campo_vazio(email) or campo_vazio(password):
             messages.error(request, 'Todos os campos são obrigratórios!')
-            return redirect('login')
+            return redirect('usuarios.login')
     
         if User.objects.filter(email=email).exists():
             nome = User.objects.filter(email=email).values_list('username', flat=True).get()
@@ -54,7 +55,7 @@ def login(request):
                 auth.login(request, user)
                 messages.success(request, 'Login realizado com sucesso!')
                 
-                return redirect('dashboard')
+                return redirect('usuarios.dashboard')
         
     return render(request, 'usuarios/login.html')
 
@@ -70,12 +71,3 @@ def dashboard(request):
 def logout(request):
     auth.logout(request)
     return redirect('receita.index')
-
-def campo_vazio(campo):
-    return not campo.strip()
-
-def usuario_cadastrado(username, email):
-    return User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists()
-
-def senhas_diferentes(password_1, password_2):
-    return password_1 != password_2
