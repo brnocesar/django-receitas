@@ -22,11 +22,11 @@
                                     <img src="{{ receita.foto.url }}" alt="">
                                 {% endif %}
                                 <div class="receipe-content">
-                                    <a href="{% url 'receita.show' receita.id %}">
+                                    <a href="{% url 'receitas.show' receita.id %}">
                                         <h5>{{ receita }}</h5>
                                     </a>
-                                    <a href="{% url 'receita.edit' receita.id %}" type="button" class="btn btn-info mr-2">Editar</a>
-                                    <a href="{% url 'receita.destroy' receita.id %}" type="button" class="btn btn-danger">Deletar</a>
+                                    <a href="{% url 'receitas.edit' receita.id %}" type="button" class="btn btn-info mr-2"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'receitas.destroy' receita.id %}" type="button" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                 </div>
                             </div>
                         </div>

@@ -20,7 +20,7 @@ def index(request):
 def create(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Realize login para cadastrar uma receita!')
-        return redirect('receita.index')
+        return redirect('receitas.index')
     
     if request.method == 'POST':
         nome          = request.POST['nome']
@@ -51,7 +51,7 @@ def create(request):
     return render(request, 'receitas/create.html')
 
 def show(request, receita_id):
-    return render(request, 'receitas/receita.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
+    return render(request, 'receitas/show.html', {'receita': get_object_or_404(Receita, pk=receita_id)})
 
 def edit(request, receita_id):
     if request.method == 'POST':

@@ -6,7 +6,8 @@ from django.conf.urls.static import static
 print(include('apps.receitas.urls'))
 
 urlpatterns = [
-    path('', include('apps.receitas.urls')),
+    path('', include('apps.home.urls')),
+    path('receitas/', include('apps.receitas.urls')),
     path('usuarios/', include('apps.usuarios.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

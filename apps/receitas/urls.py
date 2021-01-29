@@ -1,11 +1,12 @@
 from django.urls import path
 from .src.controller import *
+# from .src.controllers.ReceitaController import *
 
 urlpatterns = [
-    path('', index, name='receita.index'),
-    path('receitas/criar', create, name='receita.create'),
-    path('receitas/<int:receita_id>', show, name='receita.show'),
-    path('receitas/editar/<int:receita_id>', edit, name='receita.edit'),
-    path('receitas/deletar/<int:receita_id>', destroy, name='receita.destroy'),
+    path('', index, name='receitas.index'),
+    path('criar', create, name='receitas.create'),
+    path('<int:receita_id>', show, name='receitas.show'),
+    path('editar/<int:receita_id>', edit, name='receitas.edit'),
+    path('deletar/<int:receita_id>', destroy, name='receitas.destroy'),
     # rota para o campo de busca
 ]

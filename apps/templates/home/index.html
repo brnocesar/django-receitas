@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block content %}
+    
+    <!-- ##### Contact Form Area Start ##### -->
+    <div class="contact-area section-padding-0-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        {% if user.is_authenticated %}
+                            <h3>Bem-vindo, {{ user.username }}!</h3>
+                        {% else %}
+                            <h3>Bem-vindo visitante!</h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

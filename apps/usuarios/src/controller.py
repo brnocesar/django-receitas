@@ -61,7 +61,7 @@ def login(request):
 
 def dashboard(request):
     if not request.user.is_authenticated:
-        messages.error(request, 'Realize login para acessar a dashboard!')
+        messages.error(request, 'Realize login para acessar a página \'Minhas Receiats\'!')
         return redirect('login')
     
     receitas = Receita.objects.filter(pessoa=request.user.id).order_by('data_criacao')
@@ -70,4 +70,4 @@ def dashboard(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('receita.index')
+    return redirect('receitas.index')

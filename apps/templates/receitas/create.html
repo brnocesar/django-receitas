@@ -17,7 +17,7 @@
                 <div class="col-12">
                 <p>Todos os campos são obrigatórios</p>
                     <div class="contact-form-area">
-                        <form action="{% url 'receita.create' %}" method="POST" enctype="multipart/form-data">
+                        <form action="{% url 'receitas.create' %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-12 col-lg-12">
